@@ -25,6 +25,19 @@ it('should be able to create a new question bigger tha 255 characteres ', functi
 
 // });
 
-// it('should have at least 10 characters', function(){
+it('should have at least 10 characters', function () {
 
-// });
+    // Arrange :: preparar
+    $user = User::factory()->create();
+    actingAs($user);
+
+    // Act :: agir
+    $request = post(route('question.store'), [
+        'question' => str_repeat('*', 8) . '?',
+    ]);
+
+    // Assert :: verificar
+    $request->assertSessionHasErrors(['question' => __('validation.min.string', ['min' => 10, 'attribute' => 'question'])]);
+    assertDatabaseCount('questions', 0);
+
+});
