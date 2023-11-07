@@ -15,3 +15,15 @@ it('should be able to open a question to edit', function () {
         ->assertSuccessful();
 
 });
+
+it('should return view', function () {
+    $user = User::factory()->create();
+
+    $question = Question::factory()->for($user, 'createBy')->create();
+
+    actingAs($user);
+
+    get(route('question.edit', $question))
+        ->assertViewIs('question.edit');
+
+});
