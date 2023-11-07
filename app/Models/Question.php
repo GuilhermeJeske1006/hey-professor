@@ -12,6 +12,10 @@ class Question extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'draft' => 'bool',
+    ];
+
     public function votes(): HasMany
     {
         return $this->hasMany(Vote::class);
