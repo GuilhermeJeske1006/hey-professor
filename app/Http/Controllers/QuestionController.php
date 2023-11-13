@@ -59,4 +59,14 @@ class QuestionController extends Controller
             'questions' => $question,
         ]);
     }
+
+    public function update(Question $question): RedirectResponse
+    {
+        $question->question = request()->question;
+
+        $question->save();
+
+        return back();
+
+    }
 }
