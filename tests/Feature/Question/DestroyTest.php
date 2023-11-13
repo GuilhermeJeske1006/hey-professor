@@ -2,7 +2,7 @@
 
 use App\Models\{Question, User};
 
-use function Pest\Laravel\{actingAs, assertDatabaseMissing, delete};
+use function Pest\Laravel\{actingAs, assertDatabaseMissing, delete, get};
 
 it('should be able to destroy a question', function () {
 
@@ -34,4 +34,18 @@ it('should make sure that only the person who has created the question can destr
 
     delete(route('question.destroy', $question))
         ->assertRedirect();
+});
+
+it('should make sure that only the person who has created the question can edit the question', function () {
+
+    $rightUser = User::factory()->create();
+    $wrongUser = User::factory()->create();
+
+    $question = Question::factory()->create(['draft' => true, 'created_by' => $rightUser->id]);
+
+    actingAs($wrongUser);
+    get(route('question.edit', $question))->assertForbidden();
+
+    actingAs($rightUser);
+    get(route('question.edit', $question))->assertSuccessful();
 });
