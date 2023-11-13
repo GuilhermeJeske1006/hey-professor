@@ -2,7 +2,7 @@
 
 use App\Models\{Question, User};
 
-use function Pest\Laravel\{actingAs, put};
+use function Pest\Laravel\{actingAs, assertDatabaseCount, assertDatabaseHas, put};
 
 it('should be able to update a question', function () {
 
@@ -52,4 +52,58 @@ it('should make sure that only the person who has created the question can updat
     put(route('question.update', $question), [
         'question' => 'New question',
     ])->assertRedirect();
+});
+
+it('should be able to update a new question bigger tha 255 characteres ', function () {
+
+    // Arrange :: preparar
+    $user     = User::factory()->create();
+    $question = Question::factory()->for($user, 'createBy')->create(['draft' => true]);
+
+    actingAs($user);
+
+    // Act :: agir
+    $request = put(route('question.update', $question), [
+        'question' => str_repeat('*', 260) . '?',
+    ]);
+
+    // Assert :: verificar
+    $request->assertRedirect();
+
+    assertDatabaseCount('questions', 1);
+    assertDatabaseHas('questions', ['question' => str_repeat('*', 260) . '?']);
+});
+
+it('should check if ends with question mark ?', function () {
+    $user     = User::factory()->create();
+    $question = Question::factory()->for($user, 'createBy')->create(['draft' => true]);
+    actingAs($user);
+
+    $request = put(route('question.update', $question), [
+        'question' => str_repeat('*', 10),
+    ]);
+
+    $request->assertSessionHasErrors([
+        'question' => 'Are you sure that is a question? It is missing the question mark in the end.',
+    ]);
+
+});
+
+it('should have at least 10 characters', function () {
+
+    // Arrange :: preparar
+    $user     = User::factory()->create();
+    $question = Question::factory()->for($user, 'createBy')->create(['draft' => true]);
+    actingAs($user);
+
+    // Act :: agir
+    $request = put(route('question.update', $question), [
+        'question' => str_repeat('*', 8) . '?',
+    ]);
+
+    // Assert :: verificar
+    $request->assertSessionHasErrors([
+        'question' => __('validation.min.string', ['min' => 10, 'attribute' => 'question']),
+    ]);
+
 });
