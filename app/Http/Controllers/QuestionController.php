@@ -56,7 +56,7 @@ class QuestionController extends Controller
         $this->authorize('update', $question);
 
         return view('question.edit', [
-            'questions' => $question,
+            'question' => $question,
         ]);
     }
 
@@ -81,7 +81,7 @@ class QuestionController extends Controller
 
         $question->save();
 
-        return back();
+        return to_route('question.index');
 
     }
 }
