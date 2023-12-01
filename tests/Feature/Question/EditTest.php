@@ -7,7 +7,7 @@ use function Pest\Laravel\{actingAs, get};
 it('should be able to open a question to edit', function () {
     $user = User::factory()->create();
 
-    $question = Question::factory()->for($user, 'createBy')->create();
+    $question = Question::factory()->for($user, 'createBy')->create(['draft' => true]);
 
     actingAs($user);
 
