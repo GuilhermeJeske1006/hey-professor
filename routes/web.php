@@ -16,12 +16,6 @@ use Illuminate\Support\Facades\{Auth, Route};
 
 Route::get('/', function () {
 
-    if(app()->isLocal()) {
-        auth()->loginUsingId(1, $remember = true);
-
-        return to_route('/dashboard');
-    }
-
     return view('welcome');
 });
 
