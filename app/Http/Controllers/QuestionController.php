@@ -93,4 +93,13 @@ class QuestionController extends Controller
 
         return back();
     }
+
+    public function restore(Question $question): RedirectResponse
+    {
+        $this->authorize('restore', $question);
+
+        $question->restore();
+
+        return back();
+    }
 }
