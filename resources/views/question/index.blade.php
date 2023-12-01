@@ -36,7 +36,7 @@
                             <x-table.tr>
                                 <x-table.td>{{ $question->question }}</x-table.td>
                                 <x-table.td>
-                                    <x-form :action="route('question.destroy', $question)" delete>
+                                    <x-form :action="route('question.destroy', $question)" delete  onsubmit="return confirm('tem certeza?')">
                                         <button class="houver:underline text-blue-500">
                                              Deletar
                                          </button> 
@@ -47,6 +47,8 @@
                                             Publicar
                                         </button> 
                                     </x-form>
+                                   
+ 
 
                                     <a href="{{ route('question.edit', $question) }}" class="houver:underline text-blue-500">Editar</a>
                                 </x-table.td>
@@ -81,9 +83,52 @@
                                 <x-table.tr>
                                     <x-table.td>{{ $question->question }}</x-table.td>
                                     <x-table.td>
-                                        <x-form :action="route('question.destroy', $question)" delete>
+                                        <x-form :action="route('question.destroy', $question)" delete onsubmit="return confirm('tem certeza?')">
                                             <button class="houver:underline text-blue-500">
                                                  Deletar
+                                             </button> 
+                                         </x-form>
+                                         <x-form :action="route('question.archive', $question)" patch>
+                                            <button class="houver:underline text-blue-500">
+                                                 Arquivar
+                                             </button> 
+                                         </x-form>
+                                    </x-table.td>
+
+                                </x-table.tr>
+                            @endforeach
+
+                        </tbody>
+                    </x-table>
+
+                </div>
+
+            </div>
+
+            <div class="dark:text-gray-400 uppercase font-bold mb-1">Perguntas arquivadas</div>
+
+            <div class="dark:text-gray-400 space-y-4">
+
+
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+
+                    <x-table>
+                        <x-table.thead>
+                            <tr>
+                                <x-table.th>Perguntas</x-table.th>
+                                <x-table.th>Ações</x-table.th>
+
+                            </tr>
+                        </x-table.thead>
+                        <tbody>
+                            @foreach ($archivedQuestions->where('draft', false) as $question)
+                                <x-table.tr>
+                                    <x-table.td>{{ $question->question }}</x-table.td>
+                                    <x-table.td>
+                                        
+                                         <x-form :action="route('question.restore', $question)" patch>
+                                            <button class="houver:underline text-blue-500">
+                                                 Restaurar
                                              </button> 
                                          </x-form>
                                     </x-table.td>

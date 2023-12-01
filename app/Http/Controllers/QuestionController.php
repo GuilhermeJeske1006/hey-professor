@@ -12,7 +12,8 @@ class QuestionController extends Controller
     public function index(): View
     {
         return view('question.index', [
-            'questions' => user()->questions,
+            'questions'         => user()->questions,
+            'archivedQuestions' => user()->questions()->onlyTrashed()->get(),
         ]);
     }
 
@@ -94,12 +95,13 @@ class QuestionController extends Controller
         return back();
     }
 
-    public function restore(Question $question): RedirectResponse
+    public function restore(int $id): RedirectResponse
     {
-        $this->authorize('restore', $question);
+        $question = Question::withTrashed()->find($id);
 
         $question->restore();
 
         return back();
     }
+
 }
